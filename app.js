@@ -10,6 +10,8 @@ const closeAdjButtons = document.querySelectorAll(".close-adjusment");
 const sliderContainers = document.querySelectorAll(".sliders");
 let initialColors;
 
+let savedPalettes = [];
+
 // Event listeners
 generateButton.addEventListener("click", randomColors);
 
@@ -213,6 +215,57 @@ function lockAlternate(e, index) {
   } else {
     e.target.innerHTML = '<i class="fas fa-lock-open"></i>';
   }
+}
+
+// Palettes And Local Storage
+const saveButton = document.querySelector(".save");
+const submitSave = document.querySelector(".submit-save");
+const closeSave = document.querySelector(".close-save");
+const saveContainer = document.querySelector(".save-container");
+const saveInput = document.querySelector(".save-container input");
+
+// Event listeners
+saveButton.addEventListener("click", openPalette);
+closeSave.addEventListener("click", closePalette);
+submitSave.addEventListener("click", savePalette);
+
+function openPalette(e) {
+  const popup = saveContainer.children[0];
+  saveContainer.classList.add("active");
+  popup.classList.add("active");
+}
+
+function closePalette(e) {
+  const popup = saveContainer.children[0];
+  saveContainer.classList.remove("active");
+  popup.classList.remove("active");
+}
+
+function savePalette(e) {
+  saveContainer.classList.remove("active");
+  popup.classList.remove("active");
+  const name = saveInput.value;
+  const colors = [];
+  currentHexes.forEach((hex) => {
+    colors.push(hex.innerText);
+  });
+  let paletteNum = savedPalettes.length;
+  const paletteObj = { name, colors, number: paletteNum };
+  savedPalettes.push(paletteObj);
+  console.log(savedPalettes);
+  saveToLocal(paletteObj);
+  saveInput.value = "";
+}
+
+function saveToLocal(paletteObj) {
+  let localPalettes;
+  if (localStorage.getItem("palettes") === null) {
+    localPalettes = [];
+  } else {
+    localPalettes = JSON.parse(localStorage.getItem("palettes"));
+  }
+  localPalettes.push(paletteObj);
+  localStorage.setItem("palettes", JSON.stringify(localPalettes));
 }
 
 randomColors();
